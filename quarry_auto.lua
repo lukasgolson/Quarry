@@ -71,12 +71,17 @@ local function operateQuarry()
                 print("Unknown instruction: " .. instruction)
             end
             
+
+           
+
+
             -- Check if we are at a waypoint
             while not quarryAPI.atWaypoint() do
-                print("Waiting for waypoint...")
+               print("Waiting for waypoint...")
                 -- Wait a bit before checking again
-                os.sleep(0.1)
-            end
+                os.sleep(0.25)
+
+        end
 
             print("Waypoint reached. Continuing sequence.")
 
