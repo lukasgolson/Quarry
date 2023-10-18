@@ -5,7 +5,7 @@ local redstoneDirs = {
     reverse = "right",
     headClutch = "left",
     headHome = "front",
-    waypoint = "bottom"
+    waypoint = "bottom",
 }
 
 -- Initial state
@@ -14,9 +14,7 @@ local state = {
     xAxis = false,
     zAxis = false,
     headClutch = false,
-    isAtWaypoint = function ()
-        return rs.getInput(redstoneDirs.waypoint)
-    end,
+    hasPassedWaypoint = false,
     isHome = function()
         return rs.getInput(redstoneDirs.headHome)
     end
@@ -31,6 +29,8 @@ local function updateState(newState)
         rs.setOutput(v, state[k] or false)
     end
 end
+
+
 
 -- Function to lock the drill head
 local function lockHead()
@@ -92,7 +92,14 @@ local function moveForward()
 end
 
 local function isAtWaypoint()
-    return rs.getInput(redstoneDirs.waypoint)
+    local currentWaypointState = rs.getInput(redstoneDirs.waypoint)
+    if currentWaypointState and not state.hasPassedWaypoint then
+        state.hasPassedWaypoint = true
+        return true
+    elseif not currentWaypointState then
+        state.hasPassedWaypoint = false
+    end
+    return false
 end
 
 local quarryAPI = {}
@@ -138,6 +145,14 @@ end
 
 function quarryAPI.atWaypoint()
     return isAtWaypoint()
+end
+
+function quarryAPI.clearWaypoint()
+    state.hasPassedWaypoint = false
+end
+
+function quarryAPI.ignoreWaypoint()
+    state.hasPassedWaypoint = true    
 end
 
 

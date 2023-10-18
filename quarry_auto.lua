@@ -31,6 +31,8 @@ local function initializeQuarry()
     quarryAPI.moveHeadInDirection("right")
     os.sleep(20)
 
+    quarryAPI.ignoreWaypoint() -- Ignore the first waypoint if we are already there
+
     print("Quarry initialized. Starting sequence.")
 end
 
@@ -45,6 +47,8 @@ local function finalFunction()
     quarryAPI.moveDrill("extend")
     os.sleep(2)
     quarryAPI.setHeadClutch("lock")
+
+    os.sleep(1)
 end
 
 -- Main function for quarry operations
@@ -66,14 +70,17 @@ local function operateQuarry()
             else
                 print("Unknown instruction: " .. instruction)
             end
-
-            os.sleep(0.5)
             
             -- Check if we are at a waypoint
             while not quarryAPI.atWaypoint() do
+                print("Waiting for waypoint...")
                 -- Wait a bit before checking again
-                os.sleep(0.25)
+                os.sleep(0.1)
             end
+
+            print("Waypoint reached. Continuing sequence.")
+
+            
             
             -- If this is the last instruction, call the final function and break the loop to start over
             if i == #movementInstructions then
