@@ -43,6 +43,8 @@ local function finalFunction()
     -- Reset the drill
     quarryAPI.moveHeadInDirection("backward")
     os.sleep(20)
+    quarryAPI.moveHeadInDirection("right")
+    os.sleep(20)
     quarryAPI.setHeadClutch("unlock")
     quarryAPI.moveDrill("extend")
     os.sleep(2)
@@ -71,17 +73,12 @@ local function operateQuarry()
                 print("Unknown instruction: " .. instruction)
             end
             
-
-           
-
-
             -- Check if we are at a waypoint
             while not quarryAPI.atWaypoint() do
                print("Waiting for waypoint...")
                 -- Wait a bit before checking again
                 os.sleep(0.25)
-
-        end
+            end
 
             print("Waypoint reached. Continuing sequence.")
 
