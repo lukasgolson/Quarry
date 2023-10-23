@@ -15,9 +15,6 @@ local state = {
     zAxis = false,
     headClutch = false,
     hasPassedWaypoint = false,
-    isHome = function()
-        return rs.getInput(redstoneDirs.headHome)
-    end
 }
 
 -- Utility function to update system state and outputs
@@ -30,6 +27,21 @@ local function updateState(newState)
     end
 end
 
+
+local function isHome()
+    return rs.getInput(redstoneDirs.headHome)
+end
+
+local function isAtWaypoint()
+    local currentWaypointState = rs.getInput(redstoneDirs.waypoint)
+    if currentWaypointState and not state.hasPassedWaypoint then
+        state.hasPassedWaypoint = true
+        return true
+    elseif not currentWaypointState then
+        state.hasPassedWaypoint = false
+    end
+    return false
+end
 
 
 -- Function to lock the drill head
@@ -44,7 +56,7 @@ end
 
 -- Function to retract the drill
 local function retractDrill()
-    if state.isHome() then
+    if isHome() then
         print("Drill is already home; cannot retract it")
         return
     end
@@ -91,16 +103,7 @@ local function moveForward()
     moveHead(true, false, true)
 end
 
-local function isAtWaypoint()
-    local currentWaypointState = rs.getInput(redstoneDirs.waypoint)
-    if currentWaypointState and not state.hasPassedWaypoint then
-        state.hasPassedWaypoint = true
-        return true
-    elseif not currentWaypointState then
-        state.hasPassedWaypoint = false
-    end
-    return false
-end
+
 
 local quarryAPI = {}
 
@@ -155,5 +158,8 @@ function quarryAPI.ignoreWaypoint()
     state.hasPassedWaypoint = true    
 end
 
+function quarryAPI.isHeadHome()
+    return isHome()
+end
 
 return quarryAPI
